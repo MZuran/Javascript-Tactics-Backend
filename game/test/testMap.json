@@ -1,0 +1,19 @@
+{
+  "width": 5,
+  "height": 5,
+
+  "terrain": [
+    ["plain","plain","forest","plain","plain"],
+    ["plain","road","road","road","plain"],
+    ["forest","plain","plain","plain","forest"],
+    ["plain","plain","mountain","plain","plain"],
+    ["plain","plain","plain","plain","plain"]
+  ],
+
+  "units": [
+    { "type": "infantry", "x": 0, "y": 0, "team": 1 },
+    { "type": "tank", "x": 4, "y": 4, "team": 2 }
+  ]
+}
+
+
