@@ -1,3 +1,4 @@
+import UnitStats from "../stats/UnitStats.js"
 import DamageTable from "./DamageTable.js"
 
 export default class DamageCalculator {
@@ -7,7 +8,7 @@ export default class DamageCalculator {
         const attackerCategory = attacker.type.category
         const defenderCategory = defender.type.category
 
-        const attackPower = attacker.type.attackPower
+        const attackPower = UnitStats.get(attacker, "attackPower")
 
         const table = DamageTable[attackerCategory] || {}
 

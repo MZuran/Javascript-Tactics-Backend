@@ -1,3 +1,5 @@
+import StatusSystem from "./statusEffects/StatusSystem"
+
 export default class GameState {
 
     constructor() {
@@ -40,6 +42,10 @@ export default class GameState {
         if (this.currentPlayerIndex >= this.players.length) {
             this.currentPlayerIndex = 0
         }
+
+        const currentPlayer = this.getCurrentPlayer()
+
+        StatusSystem.onTurnStart(this, currentPlayer.id)
 
     }
 

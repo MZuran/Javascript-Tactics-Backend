@@ -30,6 +30,13 @@ export default class CombatSystem {
 
     static canAttack(gameState, attacker, defender) {
 
+        // Check if there are any statuses that prevent attacking
+        for (const entry of attacker.statusEffects.values()) {
+            if (entry.effect.canAttack && !entry.effect.canAttack(attacker)) {
+                return false
+            }
+        }
+
         // attacker and defender must exist
         if (!attacker || !defender) return false
 

@@ -1,8 +1,10 @@
+import UnitStats from "../stats/UnitStats"
+
 export default class MovementSystem {
 
     static getMoveCost(unit, tile) {
 
-        const movementType = unit.type.movementType
+        const movementType = UnitStats.get(unit, "movementType")
         const terrain = tile.terrain
 
         const cost = terrain.movementCost[movementType]
@@ -26,7 +28,7 @@ export default class MovementSystem {
     static getReachableTiles(unit, map) {
 
         const startTile = unit.tile
-        const movementPoints = unit.type.movement
+        const movementPoints = UnitStats.get(unit, "movement")
 
         const visited = new Map()
         const queue = []
@@ -45,6 +47,14 @@ export default class MovementSystem {
 
             if (!tile.unit || tile === startTile) {
                 reachable.push(tile)
+            }
+
+            // Check if there are any statuses that prevent movement
+            // if there are it only returns the tile the unit is already in
+            for (const entry of unit.statusEffects.values()) {
+                if (entry.effect.canMove && !entry.effect.canMove(unit)) {
+                    return reachable
+                }
             }
 
             const neighbors = map.getNeighbors(tile)

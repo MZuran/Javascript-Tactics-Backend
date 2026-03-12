@@ -34,6 +34,21 @@ const UnitTypes = {
         canMoveAndAttack: true
     },
 
+    HELICOPTER: {
+        name: "helicopter",
+        category: "flying",
+        cost: 7000,
+        maxHP: 10,
+        movement: 6,
+        movementType: "flying",
+        fuel: 70,
+        ammo: 9,
+        minRange: 1,
+        maxRange: 1,
+        attackPower: 5,
+        canMoveAndAttack: true
+    },
+
     ARTILLERY: {
         name: "artillery",
         category: "vehicle",
