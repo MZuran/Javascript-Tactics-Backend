@@ -1,5 +1,8 @@
 import DamageCalculator from "./DamageCalculator.js"
 
+import GameEventLog from "../events/GameEventLog.js"
+import { UnitDamagedEvent, UnitDiedEvent } from "../events/index.js"
+
 export default class CombatSystem {
 
     static attack(gameState, attacker, defender) {
@@ -15,20 +18,21 @@ export default class CombatSystem {
 
         const damage = DamageCalculator.calculate(attacker, defender)
 
-        defender.hp -= damage
+        defender.sufferDamage(gameState, damage, attacker.type.category, attacker)
 
         if (defender.hp <= 0) {
-            this.destroyUnit(gameState, defender)
+            //this.destroyUnit(gameState, defender)
         } else {
             this.counterAttack(gameState, attacker, defender)
         }
-
-        attacker.hasAttacked = true
 
         return true
     }
 
     static canAttack(gameState, attacker, defender) {
+
+        // attacker and defender must exist
+        if (!attacker || !defender) return false
 
         // Check if there are any statuses that prevent attacking
         for (const entry of attacker.statusEffects.values()) {
@@ -36,9 +40,6 @@ export default class CombatSystem {
                 return false
             }
         }
-
-        // attacker and defender must exist
-        if (!attacker || !defender) return false
 
         // defender must actually occupy its tile
         if (!defender.tile) return false
@@ -79,6 +80,8 @@ export default class CombatSystem {
 
         if (defender.type.cannotCounterattack) return
 
+        if (attacker.hp <= 0) return
+
         const dx = Math.abs(defender.tile.x - attacker.tile.x)
         const dy = Math.abs(defender.tile.y - attacker.tile.y)
 
@@ -89,19 +92,7 @@ export default class CombatSystem {
 
         const damage = DamageCalculator.calculate(defender, attacker)
 
-        attacker.hp -= damage
-
-        if (attacker.hp <= 0) {
-            this.destroyUnit(gameState, attacker)
-        }
+        attacker.sufferDamage(gameState, damage, defender.type.category, defender)
     }
 
-    static destroyUnit(gameState, unit) {
-
-        if (unit.tile) {
-            unit.tile.unit = null
-        }
-
-        gameState.removeUnit(unit)
-    }
 }

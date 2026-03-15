@@ -1,3 +1,6 @@
+import GameEventLog from "../events/GameEventLog"
+import { UnitDamagedEvent, UnitDiedEvent } from "../events"
+
 export default class Unit {
 
     constructor(id, type, owner) {
@@ -21,6 +24,38 @@ export default class Unit {
         this.statusEffects = new Map()
     }
 
+    sufferDamage(gameState, amount, category, aggresorUnit = null) {
+
+        GameEventLog.log(gameState,
+            new UnitDamagedEvent(this, category, amount)
+        )
+
+        this.hp -= amount
+
+        if (this.hp <= 0) {
+            this.destroySelf(gameState, aggresorUnit)
+        }
+
+    }
+
+    destroySelf(gameState, killer) {
+
+        GameEventLog.log(gameState,
+            new UnitDiedEvent(this)
+        )
+
+        const tile = this.tile
+
+        if (tile) {
+            tile.unit = null
+            this.tile = null
+        }
+
+        this.onDeath(gameState, tile, killer)
+
+        gameState.removeUnit(this.id)
+    }
+
     addStatus(effect, duration) {
 
         const entry = this.statusEffects.get(effect.id)
@@ -39,5 +74,27 @@ export default class Unit {
     removeStatus(id) {
         this.statusEffects.delete(id)
     }
+
+    onDeath(gameState, tile, killer) {
+
+    }
+
+    onTurnStart(gameState) {
+
+    }
+
+    onTurnEnd(gameState) {
+
+    }
+
+    onAttackStart(enemyUnit, gameState) {
+
+    }
+
+    onAttackEnd(enemyUnit, gameState) {
+
+    }
+
+
 
 }

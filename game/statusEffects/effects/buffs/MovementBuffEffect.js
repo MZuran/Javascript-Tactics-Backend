@@ -14,3 +14,5 @@ export default class MovementBuffEffect extends StatusEffect {
     }
 
 }
+
+

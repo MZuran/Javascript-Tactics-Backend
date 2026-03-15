@@ -3,7 +3,7 @@ import fs from "fs"
 import Map from "../map/Map.js"
 import Unit from "../units/Unit.js"
 import TerrainTypes from "../map/TerrainTypes.js"
-import UnitTypes from "../units/UnitTypes.js"
+import UnitTypes from "../units/index.js"
 
 export default function loadTestMap(path, gameState) {
 
