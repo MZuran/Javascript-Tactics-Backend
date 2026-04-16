@@ -139,10 +139,6 @@ export default class GameState {
             .map(t => t.unit.id)
     }
 
-    // =========================
-    // Core Gameplay Actions
-    // =========================
-
     canExecuteCommand(command, playerId) {
 
         // TODO: Add more command validation
@@ -156,6 +152,10 @@ export default class GameState {
 
         return true
     }
+
+    // =========================
+    // Core Gameplay Actions
+    // =========================
 
     moveUnit(unitId, x, y) {
 
@@ -177,6 +177,10 @@ export default class GameState {
 
         if (!targetTile) {
             throw new Error("Invalid tile")
+        }
+
+        if (targetTile.isOccupied()) {
+            throw new Error("Destination tile is occupied")
         }
 
         const startTile = unit.tile
@@ -278,9 +282,13 @@ export default class GameState {
         this.units.delete(unit.id)
     }
 
-    nextTurn() {
+    nextTurn(playerId) {
 
         let currentPlayer = this.getCurrentPlayer()
+
+        if ( currentPlayer.id != playerId ) {
+            throw new Error("Invalid player validation. End turn action cancelled.")
+        }
 
         currentPlayer.onTurnEnd(this)
         UnitSystem.onTurnEnd(this, currentPlayer.id)

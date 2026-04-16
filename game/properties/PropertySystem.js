@@ -4,7 +4,17 @@ import { PropertyAttackedEvent, PropertyDestroyedEvent, PropertyCapturedEvent, P
 
 export default class PropertySystem {
 
+    static onTurnStart(gameState, playerId) {
+        for (const property of gameState.properties.values()) {
+
+            if (property.owner !== playerId) continue
+
+            property.onTurnStart(gameState)
+        }
+    }
+
     // movement system should call this when a unit enters target tile
+    // TODO: Implement this
     static onUnitEntry(gameState, unit, tile) {
         const property = tile.property
         if (!property) return

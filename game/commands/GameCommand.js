@@ -4,4 +4,8 @@ export default class GameCommand {
         throw new Error("execute() not implemented")
     }
 
+    constructor(commandName = "Blank Command") {
+        this.name = commandName
+    }
+
 }

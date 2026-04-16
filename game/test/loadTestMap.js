@@ -1,6 +1,7 @@
 import MatchInitializer from "../match/MatchInitializer.js"
 
 import MoveUnitCommand from "../commands/types/MoveUnitCommand.js"
+import EndTurnCommand from "../commands/types/EndTurnCommand.js"
 // import AttackUnitCommand when ready
 // import EndTurnCommand when ready
 
@@ -8,25 +9,19 @@ const match = MatchInitializer.createMatch("testMap")
 
 const game = match.gameState
 
-console.log("\n=== INITIAL STATE ===")
 //console.log(JSON.stringify(game.getView({ mode: "full" }), null, 2))
 
 // ======================
 // TEST MOVE
 // ======================
 
-try {
+game.printUnits()
 
-    game.printUnits()
+match.executeCommand(new MoveUnitCommand(1, 1, 3, 3))
+match.executeCommand(new EndTurnCommand(1))
+match.executeCommand(new MoveUnitCommand(2, 2, 3, 3))
+match.executeCommand(new MoveUnitCommand(2, 2, 2, 4))
+match.executeCommand(new EndTurnCommand(2))
+match.executeCommand(new MoveUnitCommand(1, 1, 3, 4))
 
-    const moveCommand = new MoveUnitCommand(1,1,1,1)
-    console.log(moveCommand)
-
-    match.executeCommand( moveCommand )
-
-    console.log("\n=== AFTER MOVE ===")
-    game.printUnits()
-
-} catch (e) {
-    console.error("Move failed:", e.message)
-}
+game.printUnits()

@@ -4,7 +4,7 @@ export default class AttackUnitCommand extends GameCommand {
 
     constructor(playerId, unitId, x, y) {
 
-        super()
+        super("Attack Unit")
 
         this.playerId = playerId
         this.unitId = unitId

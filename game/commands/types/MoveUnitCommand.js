@@ -3,7 +3,7 @@ import GameCommand from "../GameCommand.js"
 export default class MoveUnitCommand extends GameCommand {
 
     constructor(playerId, unitId, x, y) {
-        super()
+        super("Move Unit")
 
         this.playerId = playerId
         this.unitId = unitId
