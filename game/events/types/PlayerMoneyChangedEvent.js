@@ -1,8 +1,10 @@
-export default class PlayerMoneyChangedEvent {
+import GameEvent from "../GameEvent.js"
+
+export default class PlayerMoneyChangedEvent extends GameEvent {
 
     constructor(playerId, amount, action, source = null) {
 
-        this.type = "playerMoneyChanged"
+        super("playerMoneyChanged")
 
         this.playerId = playerId
         this.amount = amount

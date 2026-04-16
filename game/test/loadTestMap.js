@@ -1,50 +1,27 @@
-import fs from "fs"
+import MatchInitializer from "../match/MatchInitializer.js"
 
-import Map from "../map/Map.js"
-import Unit from "../units/Unit.js"
-import TerrainTypes from "../map/TerrainTypes.js"
-import UnitTypes from "../units/index.js"
+import MoveUnitCommand from "../commands/types/MoveUnitCommand.js"
+// import AttackUnitCommand when ready
+// import EndTurnCommand when ready
 
-export default function loadTestMap(path, gameState) {
+const match = MatchInitializer.createMatch("testMap")
 
-    const raw = fs.readFileSync(path)
-    const data = JSON.parse(raw)
+const game = match.gameState
 
-    const map = new Map(data.width, data.height)
+console.log("\n=== INITIAL STATE ===")
+console.log(JSON.stringify(game.getView({ mode: "full" }), null, 2))
 
-    // TERRAIN
-    for (let y = 0; y < data.height; y++) {
-        for (let x = 0; x < data.width; x++) {
+// ======================
+// TEST MOVE
+// ======================
 
-            const terrainName = data.terrain[y][x]
+try {
 
-            const tile = map.getTile(x, y)
+    match.executeCommand( new MoveUnitCommand(1, 1, 0) )
 
-            tile.terrain = TerrainTypes[terrainName.toUpperCase()]
-        }
-    }
+    console.log("\n=== AFTER MOVE ===")
+    game.printUnits()
 
-    // UNITS
-    if (data.units) {
-
-        for (const u of data.units) {
-
-            const tile = map.getTile(u.x, u.y)
-
-            const id = gameState.units.size + 1
-
-            const unit = new Unit(
-                id,
-                UnitTypes[u.type.toUpperCase()],
-                u.team
-            )
-
-            unit.tile = tile
-            tile.unit = unit
-
-            gameState.addUnit(unit)
-        }
-    }
-
-    return map
+} catch (e) {
+    console.error("Move failed:", e.message)
 }

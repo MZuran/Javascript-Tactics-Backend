@@ -1,6 +1,6 @@
 // game/properties/PropertySystem.js
 import GameEventLog from "../events/GameEventLog.js"
-import { PropertyAttackedEvent, PropertyDestroyedEvent, PropertyCapturedEvent, PropertySpawnedEvent } from "../events"
+import { PropertyAttackedEvent, PropertyDestroyedEvent, PropertyCapturedEvent, PropertySpawnedEvent } from "../events/index.js"
 
 export default class PropertySystem {
 

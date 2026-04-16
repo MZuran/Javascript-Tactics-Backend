@@ -1,5 +1,5 @@
 import GameEventLog from "../events/GameEventLog.js"
-import { PlayerMoneyChangedEvent } from "../events"
+import { PlayerMoneyChangedEvent } from "../events/index.js"
 
 export default class Player {
 

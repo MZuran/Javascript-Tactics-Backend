@@ -1,4 +1,4 @@
-import UnitStats from "../stats/UnitStats"
+import UnitStats from "../stats/UnitStats.js"
 
 export default class AttackRangeSystem {
 

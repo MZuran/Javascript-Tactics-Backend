@@ -1,5 +1,5 @@
-import GameState from "./gameState"
-import UnitFactory from "./units/UnitFactory"
+import GameState from "./GameState.js"
+import UnitFactory from "./units/UnitFactory.js"
 
 class GameManager {
 

@@ -1,6 +1,6 @@
-import GameEventLog from "../events/GameEventLog"
-import { UnitDamagedEvent, UnitDiedEvent } from "../events"
-import UnitStats from "../stats/UnitStats"
+import GameEventLog from "../events/GameEventLog.js"
+import { UnitDamagedEvent, UnitDiedEvent } from "../events/index.js"
+import UnitStats from "../stats/UnitStats.js"
 
 export default class Unit {
 

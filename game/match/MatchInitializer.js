@@ -8,6 +8,7 @@ export default class MatchInitializer {
 
     static createMatch(mapName) {
 
+        // TODO: Add a better way to read maps
         const raw = fs.readFileSync(`./game/maps/${mapName}.json`, "utf-8")
         const mapData = JSON.parse(raw)
 
@@ -21,16 +22,23 @@ export default class MatchInitializer {
             }
         }
 
-        for (const id of playerIds) {
+        if (mapData.properties) {
+            for (const p of mapData.properties) {
+                if (p.owner) playerIds.add(p.owner)
+            }
+        }
 
-            // TODO: Set custom player names from map file?
-            const player = new Player(id, `Player ${id}`)
+        for (const p of mapData.players) {
 
-            // TODO: Set custom starting money from map file?
-            player.setMoney(gameState, 10000)
+            const player = new Player(p.id, p.name || `Player ${p.id}`)
+
+            player.setMoney(gameState, p.money ?? 0)
+
+            // TODO: load deck / hand later
 
             gameState.players.push(player)
         }
+
 
         return new Match(gameState)
     }

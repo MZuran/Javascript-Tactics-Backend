@@ -1,4 +1,4 @@
-import CityProperty from "./types/CityProperty"
+import CityProperty from "./types/CityProperty.js"
 
 const PropertyTypes = {
     city: CityProperty

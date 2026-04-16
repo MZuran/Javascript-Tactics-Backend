@@ -1,20 +1,20 @@
-import UnitFactory from "./units/UnitFactory"
-import PropertyFactory from "./properties/PropertyFactory"
+import UnitFactory from "./units/UnitFactory.js"
+import PropertyFactory from "./properties/PropertyFactory.js"
 
-import GameMap from "./map/Map"
-import TerrainTypes from "./map/TerrainTypes"
+import GameMap from "./map/Map.js"
+import TerrainTypes from "./map/TerrainTypes.js"
 
-import CombatSystem from "./combat/CombatSystem"
-import MovementSystem from "./movement/MovementSystem"
-import StatusSystem from "./statusEffects/StatusSystem"
-import UnitSystem from "./units/UnitSystem"
-import PropertySystem from "./properties/PropertySystem"
-import AttackRangeSystem from "./combat/AttackRangeSystem"
+import CombatSystem from "./combat/CombatSystem.js"
+import MovementSystem from "./movement/MovementSystem.js"
+import StatusSystem from "./statusEffects/StatusSystem.js"
+import UnitSystem from "./units/UnitSystem.js"
+import PropertySystem from "./properties/PropertySystem.js"
+import AttackRangeSystem from "./combat/AttackRangeSystem.js"
 
-import GameEventLog from "./events/GameEventLog"
-import { UnitMovedEvent, TurnChangedEvent, UnitDiedEvent } from "./events"
+import GameEventLog from "./events/GameEventLog.js"
+import { UnitMovedEvent, TurnChangedEvent, UnitDiedEvent } from "./events/index.js"
 
-import RNG from "./RNG/RNGSystem"
+import RNG from "./RNG/RNGSystem.js"
 
 export default class GameState {
 

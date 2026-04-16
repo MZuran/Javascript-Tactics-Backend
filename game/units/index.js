@@ -1,8 +1,8 @@
-import Infantry from "./types/Infantry.js"
-import Tank from "./types/Tank.js"
-import Helicopter from "./types/Helicopter.js"
-import Artillery from "./types/Artillery.js"
-import AntiAir from "./types/AntiAir.js"
+import Infantry from "./types/InfantryUnit.js"
+import Tank from "./types/TankUnit.js"
+import Helicopter from "./types/HelicopterUnit.js"
+import Artillery from "./types/ArtilleryUnit.js"
+import AntiAir from "./types/AntiAirUnit.js"
 
 const UnitTypes = {
 

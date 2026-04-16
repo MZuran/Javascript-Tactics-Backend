@@ -13,6 +13,8 @@ export { default as StatusRemovedEvent } from "./types/StatusRemovedEvent.js"
 //Properties
 export { default as PropertyAttackedEvent } from "./types/PropertyAttackedEvent.js"
 export { default as PropertyCapturedEvent } from "./types/PropertyCapturedEvent.js"
+export { default as PropertyDestroyedEvent } from "./types/PropertyDestroyedEvent.js"
+export { default as PropertySpawnedEvent } from "./types/PropertySpawnedEvent.js"
 
 //Player
 export { default as PlayerMoneyChangedEvent } from "./types/PlayerMoneyChangedEvent.js"

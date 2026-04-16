@@ -1,5 +1,5 @@
-import Unit from "./Unit"
-import UnitTypes from "."
+import Unit from "./Unit.js"
+import UnitTypes from "./index.js"
 
 export default class UnitFactory {
 
