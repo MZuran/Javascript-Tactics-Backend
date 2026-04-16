@@ -183,6 +183,12 @@ export default class GameState {
             throw new Error("Destination tile is occupied")
         }
 
+        const reachableTiles = this.getReachableTiles(unitId)
+
+        if (!reachableTiles.includes(targetTile)) {
+            throw new Error("Unreachable tile")
+        }
+
         const startTile = unit.tile
 
         const path = AStar.findPath(unit, this.map, startTile, targetTile)

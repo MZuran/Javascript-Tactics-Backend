@@ -17,11 +17,7 @@ const game = match.gameState
 
 game.printUnits()
 
-match.executeCommand(new MoveUnitCommand(1, 1, 3, 3))
-match.executeCommand(new EndTurnCommand(1))
-match.executeCommand(new MoveUnitCommand(2, 2, 3, 3))
-match.executeCommand(new MoveUnitCommand(2, 2, 2, 4))
-match.executeCommand(new EndTurnCommand(2))
-match.executeCommand(new MoveUnitCommand(1, 1, 3, 4))
+match.executeCommand(new MoveUnitCommand(1, 1, 0, 3))
+console.log(" ")
 
 game.printUnits()

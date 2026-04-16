@@ -97,21 +97,4 @@ export default class MovementSystem {
         return moveCost
     }
 
-    static moveUnit(unit, destinationTile) {
-
-        const startTile = unit.tile
-
-        if (!startTile) return false
-        if (destinationTile.unit) return false
-
-        startTile.unit = null
-
-        destinationTile.unit = unit
-        unit.tile = destinationTile
-
-        unit.hasMoved = true
-
-        return true
-    }
-
 }
