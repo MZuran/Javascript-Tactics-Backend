@@ -1,0 +1,23 @@
+        name
+        category
+
+        cost
+        maxHP
+
+        movement
+        movementType
+
+        fuel
+        ammo
+
+        minRange
+        maxRange
+
+        attackPower
+
+        canMoveAndAttack
+
+        ignoreAttackingHPFactor
+        ignoreDefendingTerrainDefense
+        cannotCounterattack
+        archetype

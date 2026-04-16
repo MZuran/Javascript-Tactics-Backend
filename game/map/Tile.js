@@ -7,16 +7,17 @@ export default class Tile {
 
         this.terrain = terrain
 
-        // if a unit stands here
         this.unit = null
-
-        // for cities/factories later
         this.property = null
 
     }
 
     isOccupied() {
         return this.unit !== null
+    }
+
+    hasProperty() {
+        return this.property !== null
     }
 
 }

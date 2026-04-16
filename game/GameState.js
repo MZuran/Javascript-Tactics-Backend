@@ -1,4 +1,5 @@
 import UnitFactory from "./units/UnitFactory"
+import PropertyFactory from "./properties/PropertyFactory"
 
 import GameMap from "./map/Map"
 import TerrainTypes from "./map/TerrainTypes"
@@ -7,6 +8,8 @@ import CombatSystem from "./combat/CombatSystem"
 import MovementSystem from "./movement/MovementSystem"
 import StatusSystem from "./statusEffects/StatusSystem"
 import UnitSystem from "./units/UnitSystem"
+import PropertySystem from "./properties/PropertySystem"
+import AttackRangeSystem from "./combat/AttackRangeSystem"
 
 import GameEventLog from "./events/GameEventLog"
 import { UnitMovedEvent, TurnChangedEvent, UnitDiedEvent } from "./events"
@@ -20,6 +23,9 @@ export default class GameState {
         // unit creation
         this.unitFactory = new UnitFactory()
 
+        // property creation
+        this.PropertyFactory = new PropertyFactory()
+
         // map instance
         this.map = null
 
@@ -31,7 +37,7 @@ export default class GameState {
         this.units = new Map()
 
         // properties like cities/factories
-        this.properties = []
+        this.properties = new Map()
 
         // whose turn it is
         this.currentPlayerIndex = 0
@@ -51,6 +57,10 @@ export default class GameState {
         }
 
     }
+
+    // =========================
+    // Map & Initialization
+    // =========================
 
     loadMap(data) {
 
@@ -76,6 +86,73 @@ export default class GameState {
             }
         }
 
+        // Spawn all properties on map file
+        if (data.properties) {
+            for (const p of data.properties) {
+                this.spawnProperty(p.type, p.owner, p.x, p.y)
+            }
+        }
+
+    }
+
+    // =========================
+    // Getters / Info
+    // =========================
+
+    getPlayer(id) {
+        return this.players.find(p => p.id === id)
+    }
+
+    getCurrentPlayer() {
+        return this.players[this.currentPlayerIndex]
+    }
+
+    getDay() {
+        return Math.floor(this.turnNumber / this.players.length) + 1
+    }
+
+    getAttackableTiles(unitId) {
+
+        const unit = this.units.get(unitId)
+
+        if (!unit) return []
+
+        //if (unit.owner !== this.getCurrentPlayer().id) return []
+
+        const tiles = AttackRangeSystem.getAttackableTiles(unit, this.map)
+
+        return tiles.map(t => ({
+            x: t.x,
+            y: t.y
+        }))
+    }
+
+    getAttackableUnits(unitId) {
+
+        const tiles = this.getAttackableTiles(unitId)
+
+        return tiles
+            .map(t => this.map.getTile(t.x, t.y))
+            .filter(t => t.unit && t.unit.owner !== this.getCurrentPlayer().id)
+            .map(t => t.unit.id)
+    }
+
+    // =========================
+    // Core Gameplay Actions
+    // =========================
+
+    canExecuteCommand(command, playerId) {
+
+        // TODO: Add more command validation
+
+        if (command.unitId) {
+            const unit = this.units.get(command.unitId)
+
+            if (!unit) return false
+            if (unit.owner !== playerId) return false
+        }
+
+        return true
     }
 
     moveUnit(unitId, x, y) {
@@ -155,13 +232,81 @@ export default class GameState {
 
     }
 
-    getCurrentPlayer() {
-        return this.players[this.currentPlayerIndex]
+    buyUnit(type, playerId, x, y) {
+
+        const player = this.getPlayer(playerId)
+
+        if (!player) return false
+
+        // validate tile
+        const tile = this.map.getTile(x, y)
+
+        if (!tile) return false
+        if (tile.unit) return false
+
+        // optional: validate property ownership (factory, etc)
+        if (!tile.property || tile.property.owner !== playerId) {
+            return false
+        }
+
+        // spend money
+        if (!player.spendMoney(this, type.cost, "unitProduction")) {
+            return false
+        }
+
+        // spawn
+        const unit = this.spawnUnit(type, playerId, x, y)
+
+        return unit
     }
 
-    getDay() {
-        return Math.floor(this.turnNumber / this.players.length) + 1
+    destroyUnit(unit) {
+
+        if (!unit) return
+
+        // remove from tile
+        if (unit.tile && unit.tile.unit === unit) {
+            unit.tile.unit = null
+        }
+
+        // clear reference
+        unit.tile = null
+
+        // remove from collection
+        this.units.delete(unit.id)
     }
+
+    nextTurn() {
+
+        let currentPlayer = this.getCurrentPlayer()
+
+        currentPlayer.onTurnEnd(this)
+        UnitSystem.onTurnEnd(this, currentPlayer.id)
+
+        this.turnNumber++
+
+        this.currentPlayerIndex++
+
+        if (this.currentPlayerIndex >= this.players.length) {
+            this.currentPlayerIndex = 0
+        }
+
+        currentPlayer = this.getCurrentPlayer()
+
+        GameEventLog.log(this,
+            new TurnChangedEvent(currentPlayer.id, this.turnNumber)
+        )
+
+        currentPlayer.onTurnStart(this)
+        PropertySystem.onTurnStart(this, currentPlayer.id)
+        StatusSystem.onTurnStart(this, currentPlayer.id)
+        UnitSystem.onTurnStart(this, currentPlayer.id)
+
+    }
+
+    // =========================
+    // Entity Creation / Removal
+    // =========================
 
     spawnUnit(type, owner, x, y) {
 
@@ -182,38 +327,103 @@ export default class GameState {
 
     }
 
-    nextTurn() {
+    spawnProperty(type, owner, x, y) {
+        const tile = this.map.getTile(x, y)
 
-        let currentPlayer = this.getCurrentPlayer()
+        if (!tile) throw new Error("Invalid tile")
 
-        UnitSystem.onTurnEnd(this, currentPlayer.id)
+        if (tile.property) throw new Error("Tile already occupied")
 
-        this.turnNumber++
+        const property = this.PropertyFactory.create(type, owner)
 
-        this.currentPlayerIndex++
+        property.tile = tile
+        tile.property = property
 
-        if (this.currentPlayerIndex >= this.players.length) {
-            this.currentPlayerIndex = 0
-        }
+        this.addProperty(property)
 
-        currentPlayer = this.getCurrentPlayer()
-
-        GameEventLog.log(this,
-            new TurnChangedEvent(currentPlayer.id, this.turnNumber)
-        )
-
-        StatusSystem.onTurnStart(this, currentPlayer.id)
-        UnitSystem.onTurnStart(this, currentPlayer.id)
-
+        return property
     }
 
     addUnit(unit) {
         this.units.set(unit.id, unit)
     }
 
-    removeUnit(unitId) {
-        this.units.delete(unitId)
+    addProperty(property) {
+        this.properties.set(property.id, property)
     }
+
+    // =========================
+    // View
+    // =========================
+
+    getReachableTiles(unitId) {
+
+        const unit = this.units.get(unitId)
+
+        if (unit.cacheTurn === this.turnNumber) {
+            return unit.cachedReachable
+        }
+
+        const tiles = MovementSystem.getReachableTiles(unit, this.map)
+
+        unit.cachedReachable = tiles
+        unit.cacheTurn = this.turnNumber
+
+        return tiles
+    }
+
+    getView(options = {}) {
+
+        // gameState.getView({ playerId: 1, mode: "player" })
+        // gameState.getView()
+        // gameState.getView({ mode: "full" })
+
+        const { playerId = null, mode = "public" } = options
+
+        const map = []
+
+        for (let y = 0; y < this.map.height; y++) {
+
+            const row = []
+
+            for (let x = 0; x < this.map.width; x++) {
+
+                const tile = this.map.getTile(x, y)
+
+                row.push({
+                    x,
+                    y,
+                    terrain: tile.terrain.name
+                })
+            }
+
+            map.push(row)
+        }
+
+        return {
+            map,
+
+            units: Array.from(this.units.values())
+                .map(u => u.toView({ playerId, mode }))
+                .filter(u => u !== null),
+
+            properties: Array.from(this.properties.values())
+                .map(p => p.toView({ playerId, mode })),
+
+            players: this.players.map(p => ({
+                ...p.toView({ playerId, mode }),
+                isCurrent: p.id === this.getCurrentPlayer().id
+            })),
+
+            currentPlayer: this.getCurrentPlayer().id,
+            day: this.getDay(),
+            turnNumber: this.turnNumber
+        }
+    }
+
+    // =========================
+    // Debug
+    // =========================
 
     printTerrain() {
 

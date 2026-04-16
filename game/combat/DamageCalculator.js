@@ -5,8 +5,8 @@ export default class DamageCalculator {
 
     static calculate(attacker, defender) {
 
-        const attackerCategory = attacker.type.category
-        const defenderCategory = defender.type.category
+        const attackerCategory = UnitStats.get(attacker, "category")
+        const defenderCategory = UnitStats.get(defender, "category")
 
         const attackPower = UnitStats.get(attacker, "attackPower")
 
@@ -17,7 +17,7 @@ export default class DamageCalculator {
 
         // HP factor
         const ignoreAttackingHPFactor =
-            attacker.type.ignoreAttackingHPFactor ?? false
+            UnitStats.get(attacker, "ignoreAttackingHPFactor") ?? false
 
         const hpFactor = ignoreAttackingHPFactor
             ? 1
@@ -29,7 +29,7 @@ export default class DamageCalculator {
 
         // terrain defense
         const ignoreDefendingTerrainDefense =
-            defender.type.ignoreDefendingTerrainDefense ?? false
+            UnitStats.get(defender, "ignoreDefendingTerrainDefense") ?? false
 
         const terrainDefense = ignoreDefendingTerrainDefense
             ? 0

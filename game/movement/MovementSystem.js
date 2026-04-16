@@ -79,10 +79,7 @@ export default class MovementSystem {
 
                 visited.set(neighbor, newCost)
 
-                queue.push({
-                    tile: neighbor,
-                    cost: newCost
-                })
+                queue.push({ tile: neighbor, cost: newCost })
             }
         }
 

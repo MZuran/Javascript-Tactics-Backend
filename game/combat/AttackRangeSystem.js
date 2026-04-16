@@ -1,35 +1,36 @@
+import UnitStats from "../stats/UnitStats"
+
 export default class AttackRangeSystem {
 
     static getAttackableTiles(unit, map) {
 
-        const minRange = unit.type.minRange
-        const maxRange = unit.type.maxRange
+        const minRange = UnitStats.get(unit, "minRange")
+        const maxRange = UnitStats.get(unit, "maxRange")
 
         const origin = unit.tile
 
         const attackable = []
 
-        for (let x = 0; x < map.width; x++) {
+        for (let dx = -maxRange; dx <= maxRange; dx++) {
 
-            for (let y = 0; y < map.height; y++) {
+            for (let dy = -maxRange; dy <= maxRange; dy++) {
+
+                const distance = Math.abs(dx) + Math.abs(dy)
+
+                if (distance < minRange || distance > maxRange) continue
+
+                const x = origin.x + dx
+                const y = origin.y + dy
 
                 const tile = map.getTile(x, y)
 
-                const dx = Math.abs(tile.x - origin.x)
-                const dy = Math.abs(tile.y - origin.y)
+                if (!tile) continue
 
-                const distance = dx + dy
-
-                if (distance >= minRange && distance <= maxRange) {
-                    attackable.push(tile)
-                }
-
+                attackable.push(tile)
             }
-
         }
 
         return attackable
-
     }
 
 }

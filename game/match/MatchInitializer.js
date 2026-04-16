@@ -1,58 +1,38 @@
 import fs from "fs"
 
-import Map from "../map/Map.js"
-import GameState from "../gameState.js"
-import Unit from "../units/Unit.js"
-import TerrainTypes from "../map/TerrainTypes.js"
+import GameState from "../GameState.js"
+import Match from "./Match.js"
+import Player from "../player/Player.js"
 
 export default class MatchInitializer {
 
     static createMatch(mapName) {
 
-        const raw = fs.readFileSync( `./game/maps/${mapName}.json`, "utf-8" )
-
+        const raw = fs.readFileSync(`./game/maps/${mapName}.json`, "utf-8")
         const mapData = JSON.parse(raw)
 
-        const map = new Map(mapData.width, mapData.height)
+        const gameState = new GameState(mapData)
 
-        // build terrain
-        for (let y = 0; y < mapData.height; y++) {
+        const playerIds = new Set()
 
-            for (let x = 0; x < mapData.width; x++) {
-
-                const terrainName = mapData.terrain[y][x]
-
-                const tile = map.getTile(x, y)
-
-                tile.terrain = TerrainTypes[terrainName]
-
+        if (mapData.units) {
+            for (const u of mapData.units) {
+                playerIds.add(u.team)
             }
-
         }
 
-        const gameState = new GameState()
+        for (const id of playerIds) {
 
-        gameState.map = map
+            // TODO: Set custom player names from map file?
+            const player = new Player(id, `Player ${id}`)
 
-        // spawn units
-        for (const unitData of mapData.units) {
+            // TODO: Set custom starting money from map file?
+            player.setMoney(gameState, 10000)
 
-            const tile = map.getTile(unitData.x, unitData.y)
-
-            const unit = new Unit(
-                unitData.type,
-                unitData.team,
-                tile
-            )
-
-            tile.unit = unit
-
-            gameState.units.set(unit.id, unit)
-
+            gameState.players.push(player)
         }
 
-        return gameState
-
+        return new Match(gameState)
     }
 
 }

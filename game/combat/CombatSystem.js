@@ -1,7 +1,5 @@
 import DamageCalculator from "./DamageCalculator.js"
-
-import GameEventLog from "../events/GameEventLog.js"
-import { UnitDamagedEvent, UnitDiedEvent } from "../events/index.js"
+import UnitStats from "../stats/UnitStats.js"
 
 export default class CombatSystem {
 
@@ -17,11 +15,12 @@ export default class CombatSystem {
         }
 
         const damage = DamageCalculator.calculate(attacker, defender)
+        const attackerCategory = UnitStats.get(attacker, "category")
 
-        defender.sufferDamage(gameState, damage, attacker.type.category, attacker)
+        defender.sufferDamage(gameState, damage, attackerCategory, attacker)
 
         if (defender.hp <= 0) {
-            //this.destroyUnit(gameState, defender)
+            //gameState.destroyUnit(defender, attacker)
         } else {
             this.counterAttack(gameState, attacker, defender)
         }
@@ -60,8 +59,8 @@ export default class CombatSystem {
 
         const distance = dx + dy
 
-        if (distance < attacker.type.minRange) return false
-        if (distance > attacker.type.maxRange) return false
+        if (distance < UnitStats.get(attacker, "minRange")) return false
+        if (distance > UnitStats.get(attacker, "maxRange")) return false
 
         // ammo check
         if (attacker.type.ammo !== null && attacker.ammo <= 0) {
@@ -69,7 +68,7 @@ export default class CombatSystem {
         }
 
         // move + attack restriction
-        if (attacker.hasMoved && !attacker.type.canMoveAndAttack) {
+        if (attacker.hasMoved && !UnitStats.get(attacker, "canMoveAndAttack")) {
             return false
         }
 
@@ -78,7 +77,7 @@ export default class CombatSystem {
 
     static counterAttack(gameState, attacker, defender) {
 
-        if (defender.type.cannotCounterattack) return
+        if (UnitStats.get(defender, "cannotCounterattack")) return
 
         if (attacker.hp <= 0) return
 
@@ -87,12 +86,13 @@ export default class CombatSystem {
 
         const distance = dx + dy
 
-        if (distance < defender.type.minRange) return
-        if (distance > defender.type.maxRange) return
+        if (distance < UnitStats.get(defender, "minRange")) return
+        if (distance > UnitStats.get(defender, "maxRange")) return
 
         const damage = DamageCalculator.calculate(defender, attacker)
 
-        attacker.sufferDamage(gameState, damage, defender.type.category, defender)
+        attacker.sufferDamage(gameState, damage, UnitStats.get(defender, "category"), defender)
+
     }
 
 }

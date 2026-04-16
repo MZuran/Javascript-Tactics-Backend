@@ -14,11 +14,7 @@ export default class AttackUnitCommand extends GameCommand {
 
     execute(gameState) {
 
-        gameState.attackUnit(
-            this.unitId,
-            this.x,
-            this.y
-        )
+        gameState.attackUnit( this.unitId, this.x, this.y )
 
     }
 

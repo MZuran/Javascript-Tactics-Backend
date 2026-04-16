@@ -2,12 +2,12 @@ import GameEvent from "../GameEvent"
 
 export default class UnitDiedEvent extends GameEvent {
 
-    constructor(unit) {
+    constructor(unit, killer) {
 
         super("unitDied")
 
         this.unitId = unit.id
-
+        
         this.x = unit.tile.x
         this.y = unit.tile.y
 

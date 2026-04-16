@@ -6,10 +6,12 @@ export default class UnitSystem {
 
             if (unit.owner !== playerId) continue
 
+            // reset turn flags
+            unit.hasMoved = false
+            unit.hasAttacked = false
+
             unit.onTurnStart(gameState)
-
         }
-
     }
 
     static onTurnEnd(gameState, playerId) {
