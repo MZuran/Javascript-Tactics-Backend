@@ -4,6 +4,8 @@ import PropertyFactory from "./properties/PropertyFactory.js"
 import GameMap from "./map/Map.js"
 import TerrainTypes from "./map/TerrainTypes.js"
 
+import AStar from "./movement/AStar.js"
+
 import CombatSystem from "./combat/CombatSystem.js"
 import MovementSystem from "./movement/MovementSystem.js"
 import StatusSystem from "./statusEffects/StatusSystem.js"
@@ -177,13 +179,13 @@ export default class GameState {
             throw new Error("Invalid tile")
         }
 
-        const path = MovementSystem.findPath(unit, targetTile, this.map)
+        const startTile = unit.tile
+
+        const path = AStar.findPath(unit, this.map, startTile, targetTile)
 
         if (!path) {
             throw new Error("No valid path")
         }
-
-        const startTile = unit.tile
 
         startTile.unit = null
 

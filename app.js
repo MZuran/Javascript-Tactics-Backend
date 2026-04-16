@@ -43,10 +43,10 @@ app.use((err, req, res, next) => {
 export default app;
 
 /* TESTING */
-import startTestGame from './game/test/startTestGame.js';
+/* import startTestGame from './game/test/startTestGame.js';
 
 const testGameState = startTestGame()
 
 testGameState.printUnits()
 console.log(" ")
-testGameState.printTerrain()
+testGameState.printTerrain() */

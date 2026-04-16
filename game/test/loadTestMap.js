@@ -9,7 +9,7 @@ const match = MatchInitializer.createMatch("testMap")
 const game = match.gameState
 
 console.log("\n=== INITIAL STATE ===")
-console.log(JSON.stringify(game.getView({ mode: "full" }), null, 2))
+//console.log(JSON.stringify(game.getView({ mode: "full" }), null, 2))
 
 // ======================
 // TEST MOVE
@@ -17,7 +17,12 @@ console.log(JSON.stringify(game.getView({ mode: "full" }), null, 2))
 
 try {
 
-    match.executeCommand( new MoveUnitCommand(1, 1, 0) )
+    game.printUnits()
+
+    const moveCommand = new MoveUnitCommand(1,1,1,1)
+    console.log(moveCommand)
+
+    match.executeCommand( moveCommand )
 
     console.log("\n=== AFTER MOVE ===")
     game.printUnits()

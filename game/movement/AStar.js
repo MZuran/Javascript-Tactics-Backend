@@ -1,4 +1,4 @@
-import MovementSystem from "./MovementSystem"
+import MovementSystem from "./MovementSystem.js"
 
 export default class AStar {
 
@@ -45,6 +45,7 @@ export default class AStar {
             for (const neighbor of neighbors) {
 
                 if (!neighbor) continue
+
 
                 const moveCost = MovementSystem.getTraversalCost(unit, neighbor)
 

@@ -1,4 +1,4 @@
-import loadTestMap from "./loadTestMap.js"
+/* import loadTestMap from "./loadTestMap.js"
 import GameState from "../gameState.js"
 
 export default function startTestGame() {
@@ -13,4 +13,4 @@ export default function startTestGame() {
     gameState.map = loadTestMap("./game/test/testMap.json", gameState)
 
     return gameState
-}
+} */

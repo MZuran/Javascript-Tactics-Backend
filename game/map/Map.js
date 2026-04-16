@@ -23,7 +23,8 @@ export default class Map {
 
     }
 
-    getNeighbors(x, y) {
+    getNeighbors(tile) {
+        const {x, y} = tile
         return [
             this.getTile(x + 1, y),
             this.getTile(x - 1, y),

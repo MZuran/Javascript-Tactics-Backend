@@ -9,7 +9,7 @@ export default class MatchInitializer {
     static createMatch(mapName) {
 
         // TODO: Add a better way to read maps
-        const raw = fs.readFileSync(`./game/maps/${mapName}.json`, "utf-8")
+        const raw = fs.readFileSync(`../../game/maps/${mapName}.json`, "utf-8")
         const mapData = JSON.parse(raw)
 
         const gameState = new GameState(mapData)
